@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="en">
+
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Acne Severity Grading</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #add8e6;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start; /* Change from center to flex-start */
+            height: 100vh;
+            margin: 0;
+            overflow-y: auto; /* Allow vertical scrolling */
+        }   
+
+
+        .container {
+            background-color: #e6e6fa;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            width: 600px;
+            margin-top: 20px; /* Add margin at the top */
+        }
+
+
+        .title {
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+
+
+        .button {
+            margin: 10px 0;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            background-color: #add8e6;
+            cursor: pointer;
+            font-size: 16px;
+            width: 180px;
+        }
+
+
+        .button:hover {
+            background-color: #87cefa;
+        }
+
+
+        .capture-forehead-button,
+        .capture-leftcheeks-button,
+        .capture-rightcheeks-button,
+        .capture-nose-button,
+        .capture-chin-button {
+            margin: 10px 0;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            background-color: #add8e6;
+            cursor: pointer;
+            font-size: 16px;
+            width: 180px;
+        }
+
+
+        .capture-forehead-button:hover,
+        .capture-leftcheeks-button:hover,
+        .capture-rightcheeks-button:hover,
+        .capture-nose-button:hover,
+        .capture-chin-button:hover {
+            background-color: #87cefa;
+        }
+
+
+        .remove-forehead-button,
+        .remove-leftcheeks-button,
+        .remove-rightcheeks-button,
+        .remove-nose-button,
+        .remove-chin-button {
+            margin: 10px 0;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            background-color: #ffb6c1;
+            cursor: pointer;
+            font-size: 16px;
+            width: 180px;
+            margin-left: 10px;
+        }
+
+
+        .remove-forehead-button:hover,
+        .remove-leftcheeks-button:hover,
+        .remove-rightcheeks-button:hover,
+        .remove-nose-button:hover,
+        .remove-chin-button:hover {
+            background-color: #ffa07a;
+        }
+
+
+        .analyze-button {
+            margin: 10px 0;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            background-color: #90ee90;
+            cursor: pointer;
+            font-size: 16px;
+            width: 180px;
+        }
+
+
+        .analyze-button:hover {
+            background-color: #32cd32;
+        }
+
+
+        .add-patient-button {
+            margin: 10px 0;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            background-color: #87cefa;
+            cursor: pointer;
+            font-size: 16px;
+            width: 200px;
+        }
+
+
+        .add-patient-button:hover {
+            background-color: #4682b4;
+        }
+
+
+        .section {
+            margin: 10px 0;
+        }
+
+
+        .result {
+            margin-top: 20px;
+            font-size: 24px; /* Double the original font size */
+            background-color: #ffffff;
+            padding: 20px; /* Increased padding */
+            border-radius: 5px;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .severity {
+            background-color: #ffeb3b; /* Highlight color for severity */
+            padding: 5px;
+            border-radius: 5px;
+            display: inline-block;
+        }
+
+
+        .flex-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 10px 0;
+        }
+
+
+        .flex-container label {
+            flex: 1;
+            text-align: left;
+            margin-left: 5px;
+        }
+
+
+        .flex-container input {
+            margin-right: 5px;
+        }
+
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.4);
+            justify-content: center;
+            align-items: center;
+        }
+
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 800px;
+            position: relative;
+            text-align: center;
+        }
+
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+
+        #camera {
+            width: 100%;
+            height: 500px;
+            background-color: #ddd;
+        }
+
+
+        .capture-button {
+            background-color: #4CAF50;
+            border: none;
+            color: white;
+            padding: 15px 32px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 20px auto;
+            cursor: pointer;
+            border-radius: 10px;
+            width: 540px;
+        }
+
+
+        .notification {
+            display: none;
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #4CAF50;
+            color: white;
+            padding: 15px;
+            border-radius: 5px;
+            z-index: 2;
+        }
+
+
+        .progress-container {
+            display: none;
+            width: 180px;
+            background-color: #f3f3f3;
+            margin: 10px auto;
+        }
+
+
+        .progress-bar {
+            width: 0;
+            height: 30px;
+            background-color: #4CAF50;
+            text-align: center;
+            line-height: 30px;
+            color: white;
+        }
+    </style>
+</head>
+
+
+<body>
+    <div class="container">
+        <div class="title">ACNE SEVERITY GRADING</div>
+        <button class="add-patient-button" onclick="checkAddPatient()">ADD NEW PATIENT</button>
+        <div class="section">
+            <div class="flex-container">
+                <input type="checkbox" id="forehead" disabled>
+                <label for="forehead">Forehead</label>
+                <button class="capture-forehead-button" onclick="capture('Forehead')">Forehead</button>
+                <button class="remove-forehead-button" onclick="removeImage('Forehead')">Remove</button>
+            </div>
+            <div class="flex-container">
+                <input type="checkbox" id="leftcheeks" disabled>
+                <label for="leftcheeks">Left Cheeks</label>
+                <button class="capture-leftcheeks-button" onclick="capture('LeftCheeks')">LeftCheeks</button>
+                <button class="remove-leftcheeks-button" onclick="removeImage('LeftCheeks')">Remove</button>
+            </div>
+            <div class="flex-container">
+                <input type="checkbox" id="rightcheeks" disabled>
+                <label for="rightcheeks">Right Cheeks</label>
+                <button class="capture-rightcheeks-button" onclick="capture('RightCheeks')">RightCheeks</button>
+                <button class="remove-rightcheeks-button" onclick="removeImage('RightCheeks')">Remove</button>
+            </div>
+            <div class="flex-container">
+                <input type="checkbox" id="nose" disabled>
+                <label for="nose">Nose</label>
+                <button class="capture-nose-button" onclick="capture('Nose')">Nose</button>
+                <button class="remove-nose-button" onclick="removeImage('Nose')">Remove</button>
+            </div>
+            <div class="flex-container">
+                <input type="checkbox" id="chin" disabled>
+                <label for="chin">Chin</label>
+                <button class="capture-chin-button" onclick="capture('Chin')">Chin</button>
+                <button class="remove-chin-button" onclick="removeImage('Chin')">Remove</button>
+            </div>
+        </div>
+        <button class="analyze-button" onclick="analyze()">ANALYZE</button>
+        <!-- Progress bar -->
+        <div class="progress-container" id="progressContainer">
+            <div class="progress-bar" id="progressBar">Analyzing...</div>
+        </div>
+        <div class="result">
+            Analysis Result <br><span id="lastPatient">{{ last_patient }}</span><br>
+            <span id="analyzeResult"></span>
+        </div>
+    </div>
+
+
+    <!-- Modal for camera -->
+    <div id="cameraModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2 id="cameraLabel"></h2>
+            <video id="camera" autoplay></video>
+            <button class="capture-button" onclick="captureImage()">Capture</button>
+        </div>
+    </div>
+
+
+    <!-- Notification -->
+    <div id="notification" class="notification">
+        Image successfully captured!
+    </div>
+
+
+    <script>
+        let currentArea = '';
+
+
+        document.querySelectorAll('.capture-forehead-button, .capture-leftcheeks-button, .capture-rightcheeks-button, .capture-nose-button, .capture-chin-button').forEach(button => {
+            button.addEventListener('click', event => {
+                currentArea = event.target.innerText.split(' ')[0]; // Update current area based on the button text
+                document.getElementById('cameraLabel').innerText = currentArea.replace(/(^\w|\s\w)/g, m => m.toUpperCase());
+                document.getElementById('cameraModal').style.display = 'flex';
+                startCamera();
+            });
+        });
+
+
+        document.querySelector('.close').addEventListener('click', () => {
+            document.getElementById('cameraModal').style.display = 'none';
+            stopCamera();
+        });
+
+
+        const video = document.getElementById('camera');
+        let stream;
+
+
+        function startCamera() {
+            navigator.mediaDevices.getUserMedia({ video: true })
+                .then(s => {
+                    stream = s;
+                    video.srcObject = stream;
+                })
+                .catch(err => {
+                    console.error("Error accessing camera: ", err);
+                });
+        }
+
+
+        function stopCamera() {
+            if (stream) {
+                stream.getTracks().forEach(track => track.stop());
+            }
+        }
+
+
+        function captureImage() {
+            const canvas = document.createElement('canvas');
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            const context = canvas.getContext('2d');
+            context.drawImage(video, 0, 0, canvas.width, canvas.height);
+            const imageData = canvas.toDataURL('image/jpeg'); // Assuming JPEG is used
+
+            const patient = document.getElementById('lastPatient').innerText;
+            if (patient === 'No Data Patient') {
+                alert('Please add a new patient first.');
+                return;
+            }
+
+            fetch('/save_image', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    patient: patient,
+                    image: imageData,
+                    area: currentArea,
+                    image_type: 'jpeg' // Specify image type here
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    document.getElementById(currentArea.toLowerCase()).checked = true;
+                    showNotification();
+                    stopCamera();
+                    document.getElementById('cameraModal').style.display = 'none';
+                }
+            });
+        }
+
+        function capture(area) {
+            currentArea = area;
+            document.getElementById('cameraLabel').innerText = area.replace(/(^\w|\s\w)/g, m => m.toUpperCase());
+            document.getElementById('cameraModal').style.display = 'flex';
+            startCamera();
+        }
+
+
+        function removeImage(area) {
+        const confirmDeletion = confirm(`Do you want to delete the image for ${area}?`);
+        if (!confirmDeletion) {
+            return;
+        }
+
+
+        const patient = document.getElementById('lastPatient').innerText;
+        if (patient === 'No Data Patient') {
+            alert('No patient data to remove.');
+            return;
+        }
+
+
+        fetch('/remove_image', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                patient: patient,
+                area: area
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                document.getElementById(area.toLowerCase()).checked = false;
+                alert('Image removed successfully!');
+            } else {
+                alert('Failed to remove image.');
+            }
+        });
+    }
+
+
+        function showNotification() {
+            const notification = document.getElementById('notification');
+            notification.style.display = 'block';
+            setTimeout(() => {
+                notification.style.display = 'none';
+            }, 3000);
+        }
+
+
+        function addPatient() {
+            fetch('/add_patient', { method: 'POST' })
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('lastPatient').innerText = data.new_patient;
+                    document.getElementById('analyzeResult').innerText = ''; // Clear analyze result
+                    checkImages(data.new_patient);
+                });
+        }
+
+
+        function checkAddPatient() {
+            fetch('/confirm_add_patient', { method: 'POST' })
+                .then(response => response.json())
+                .then(data => {
+                    const addPatientConfirmation = confirm(data.message);
+                    if (addPatientConfirmation) {
+                        addPatient();
+                    }
+                });
+        }  
+
+
+        function checkImages(patient) {
+        fetch(`/check_images/${patient}`)
+            .then(response => response.json())
+            .then(data => {
+                for (const area in data) {
+                    document.getElementById(area.toLowerCase()).checked = data[area];
+                }
+            });
+    }
+
+
+    function analyze() {
+    const patient = document.getElementById('lastPatient').innerText;
+    if (patient === 'No Data Patient') {
+        alert('Please add a new patient first.');
+        return;
+    }
+
+    // Check if result folder exists
+    fetch(`/check_result_folder/${patient}`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.exists) {
+                const overwrite = confirm("The analysis result already exists. Do you want to overwrite it?");
+                if (!overwrite) {
+                    return;
+                }
+            }
+
+            // Show progress bar
+            document.getElementById('progressContainer').style.display = 'block';
+            document.getElementById('progressBar').style.width = '50%'; // Starting progress
+
+            fetch('/analyze', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    patient: patient
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Hide progress bar
+                document.getElementById('progressContainer').style.display = 'none';
+                document.getElementById('progressBar').style.width = '0%'; // Reset progress bar
+
+                if (data.status === 'success') {
+                    let resultText = `Severity: <span class="severity">${data.severity}</span><br>Recommended Treatment: ${data.recommended_treatment}<br> Locations and Score: <br>`;
+                    for (const [area, score] of Object.entries(data.results)) {
+                        resultText += `${area}: ${score}<br>`;
+                    }
+                    document.getElementById('analyzeResult').innerHTML = resultText;
+                    document.getElementById('lastPatient').innerText = `Patient No. ${patient.replace('Patient No. ', '')}`;
+
+                    const saveResults = confirm("Do you want to save these results?");
+                    if (saveResults) {
+                        saveAnalysisResults(patient, data);
+                    }
+                }
+            })
+            .catch(error => {
+                // Hide progress bar on error
+                document.getElementById('progressContainer').style.display = 'none';
+                document.getElementById('progressBar').style.width = '0%'; // Reset progress bar
+                console.error('Error:', error);
+            });
+        });
+}
+
+
+    function saveAnalysisResults(patient, data) {
+        const patient_folder_path = `patientData/${patient}`;
+        const result_folder_path = `${patient_folder_path}/result`;
+
+
+        fetch(`/save_results`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                patient: patient,
+                results: data.results,
+                severity: data.severity,
+                recommended_treatment: data.recommended_treatment,
+                total_score: data.total_score,
+                patient_folder_path: patient_folder_path,
+                result_folder_path: result_folder_path
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                alert('Results saved successfully!');
+            } else {
+                alert('Failed to save results.');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+    }
+
+
+    window.onload = () => {
+        const lastPatient = document.getElementById('lastPatient').innerText;
+        if (lastPatient !== 'No Data Patient') {
+            checkImages(lastPatient);
+        }
+    };
+    </script>
+</body>
+</html>
